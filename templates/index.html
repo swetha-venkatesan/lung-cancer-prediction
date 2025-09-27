@@ -1,0 +1,541 @@
+<!-- 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lung Cancer Prediction</title>
+    <style>
+        /* Apply background image to the whole page */
+body {
+    margin: 0;
+    padding: 0;
+    background: url("https://tse2.mm.bing.net/th/id/OIP.J9-V6GoClSgpLFHC6BWSAgHaEK?rs=1&pid=ImgDetMain&o=7&rm=3") no-repeat center center fixed;
+    background-size: cover;  /* Ensures it covers entire screen 
+    /* font-family: Arial, sans-serif; */
+}
+        h2 {
+            color: white;
+            text-shadow: 2px 2px 4px #000000;
+        }
+        input[type="number"], input[type="submit"] {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        /* Toggle Switch Styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: #4CAF50;
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        .toggle-row {
+            margin: 10px 0;
+        }
+        .toggle-label {
+            display: inline-block;
+            width: 250px;
+            text-align: left;
+        }
+        .button-row {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body 
+style="background-image: url(https://tse2.mm.bing.net/th/id/OIP.J9-V6GoClSgpLFHC6BWSAgHaEK?rs=1&pid=ImgDetMain&o=7&rm=3);">
+    <div class="container mt-5 text-center">
+        <h2 class="mt-4">Lung Cancer Prediction</h2>
+        <form action="{{ url_for('predict') }}" method="post">
+           
+
+                <div class="toggle-row">
+                    <label class="toggle-label">GENDER:</label>
+                    <input type="radio" name="GENDER" value="1" required> Male
+                    <input type="radio" name="GENDER" value="0" required> Female
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-label" for="AGE">AGE:</label>
+                    <input type="number" id="AGE" name="AGE" placeholder="Enter AGE" required>
+                </div>
+
+                
+                <div class="toggle-row">
+                    <label class="toggle-label">SMOKING:</label>
+                    <input type="hidden" name="SMOKING" value="0">
+                    <label class="switch">
+                        <input type="checkbox" name="SMOKING" value="1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-label">YELLOW FINGERS:</label>
+                    <input type="hidden" name="YELLOW_FINGERS" value="0">
+                    <label class="switch">
+                        <input type="checkbox" name="YELLOW_FINGERS" value="1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-label">ANXIETY:</label>
+                    <input type="hidden" name="ANXIETY" value="0">
+                    <label class="switch">
+                        <input type="checkbox" name="ANXIETY" value="1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-label">PEER_PRESSURE:</label>
+                    <input type="hidden" name="PEER_PRESSURE" value="0">
+                    <label class="switch">
+                        <input type="checkbox" name="PEER_PRESSURE" value="1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-label">CHRONIC_DISEASE:</label>
+                    <input type="hidden" name="CHRONIC_DISEASE" value="0">
+                    <label class="switch">
+                        <input type="checkbox" name="CHRONIC_DISEASE" value="1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-label">FATIGUE:</label>
+                    <input type="hidden" name="FATIGUE" value="0">
+                    <label class="switch">
+                        <input type="checkbox" name="FATIGUE" value="1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-label">ALLERGY:</label>
+                    <input type="hidden" name="ALLERGY" value="0">
+                    <label class="switch">
+                        <input type="checkbox" name="ALLERGY" value="1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-label">WHEEZING:</label>
+                    <input type="hidden" name="WHEEZING" value="0">
+                    <label class="switch">
+                        <input type="checkbox" name="WHEEZING" value="1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-label">ALCOHOL CONSUMING:</label>
+                    <input type="hidden" name="ALCOHOL_CONSUMING" value="0">
+                    <label class="switch">
+                        <input type="checkbox" name="ALCOHOL_CONSUMING" value="1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-label">COUGHING:</label>
+                    <input type="hidden" name="COUGHING" value="0">
+                    <label class="switch">
+                        <input type="checkbox" name="COUGHING" value="1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-label">SHORTNESS OF BREATH:</label>
+                    <input type="hidden" name="SHORTNESS_OF_BREATH" value="0">
+                    <label class="switch">
+                        <input type="checkbox" name="SHORTNESS_OF_BREATH" value="1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-label">SWALLOWING DIFFICULTY:</label>
+                    <input type="hidden" name="SWALLOWING_DIFFICULTY" value="0">
+                    <label class="switch">
+                        <input type="checkbox" name="SWALLOWING_DIFFICULTY" value="1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="toggle-row">
+                    <label class="toggle-label">CHEST PAIN:</label>
+                    <input type="hidden" name="CHEST_PAIN" value="0">
+                    <label class="switch">
+                        <input type="checkbox" name="CHEST_PAIN" value="1">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+           
+
+            <br>
+            <div class="button-row">
+             <input type="submit" value="Submit">
+            </div>
+
+        </form>
+    </div>
+</body>
+</html> -->
+
+
+
+
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lung Cancer Prediction</title>
+    <style>
+        /* Apply background image to the whole page */
+        body {
+            margin: 0;
+            padding: 0;
+            background: url("https://tse2.mm.bing.net/th/id/OIP.J9-V6GoClSgpLFHC6BWSAgHaEK?rs=1&pid=ImgDetMain&o=7&rm=3") no-repeat center center fixed;
+            background-size: cover;
+        }
+        h2 {
+            color: white;
+            text-shadow: 2px 2px 4px #000000;
+        }
+        input[type="number"], input[type="submit"] {
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px; width: 18px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #4CAF50; }
+        input:checked + .slider:before { transform: translateX(26px); }
+        .toggle-row { margin: 10px 0; }
+        .toggle-label { display: inline-block; width: 250px; text-align: left; }
+        .button-row { text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <section class="landing">
+        <h1>lung disease prediction</h1>
+        <p>Heart disease is the leading cause of death worldwide. Early detection can save lives. Fill in your details and predict your heart health now!</p>
+        <button onclick="showForm()">Start Prediction</button>
+    </section>
+
+    <section class="form-section" id="form-section">
+        <div class="form-box">
+            <h2>ENTER YOUR DETAILS</h2>
+            <form method="POST" action="/predict">
+            <label>GENDER</label>
+            <input type="number" name="GENDER" required>
+
+            <br>
+            <label>AGE</label>
+            <input type="number" name="AGE" required>
+
+
+            <br>
+            <label>SMOKING</label>
+            <input type="number" name="SMOKING" required>
+
+
+            <br>
+            <label>YELLOW_FINGERS</label>
+            <input type="number" name="YELLOW_FINGERS" required>
+
+
+            <br>
+            <label>ANXIETY</label>
+            <input type="number" name="ANXIETY" required>
+
+
+            <br>
+            <label>PEER_PRESSURE</label>
+            <input type="number" name="PEER_PRESSURE" required>
+
+
+            <br>
+            <label>CHRONIC_DISEASE</label>
+            <input type="number" name="CHRONIC_DISEASE" required>
+
+
+            <br>
+            <label>FATIGUE</label>
+            <input type="number" name="FATIGUE" required>
+
+
+            <br>
+            <label>ALLERGY</label>
+            <input type="number" name="ALLERGY" required>
+
+
+            <br>
+            <label>WHEEZING</label>
+            <input type="number" name="WHEEZING" required>
+
+
+            <br>
+            <label>ALCOHOL_CONSUMING</label>
+            <input type="number" name="ALCOHOL_CONSUMING" required>
+
+
+            <br>
+            <label>COUGHING</label>
+            <input type="number" name="COUGHING" required>
+
+
+            <br>
+            <label>SHORTNESS_OF_BREATH</label>
+            <input type="number" name="SHORTNESS_OF_BREATH" required>
+
+
+            <br>
+            <label> SWALLOWING_DIFFICULTY</label>
+            <input type="number" name=" SWALLOWING_DIFFICULTY" required>
+
+
+            <br>
+            < <label>CHEST_PAIN</label>
+            <input type="number" name="CHEST_PAIN" required> -->
+<!-- 
+                <button type="submit" class="submit-btn">Predict</button>
+            </form>
+        </div>
+    </section>
+
+        <script>
+        function showForm() {
+            const formSection = document.getElementById('form-section');
+            formSection.style.display = 'flex';
+            formSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script> -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <!-- <div class="container mt-5 text-center">
+        <h2 class="mt-4">Lung Cancer Prediction</h2>
+        <form action="{{ url_for('predict') }}" method="post">
+            
+            
+            <div class="toggle-row">
+                <label class="toggle-label">Gender:</label>
+                <input type="radio" name="GENDER" value="1" required> Male
+                <input type="radio" name="GENDER" value="0" required> Female
+            </div>
+
+            
+            <div class="toggle-row">
+
+                <label class="toggle-label" for="age">Age:</label>
+                 <input type="number" id="age" name="AGE" required> 
+            </div>
+
+            
+            {% set fields = [
+                ('smoking','Smoking'),
+                ('yellow_fingers','Yellow_Fingers'),
+                ('anxiety','Anxiety'),
+                ('peer_pressure','Peer_Pressure'),
+                ('chronic_disease','Chronic_Disease'),
+                ('fatigue','Fatigue'),
+                ('allergy','Allergy'),
+                ('wheezing','Wheezing'),
+                ('alcohol_consuming','Alcohol_Consuming'),
+                ('coughing','Coughing'),
+                ('shortness_of_breath','Shortness_of_Breath'),
+                ('swallowing_difficulty','Swallowing_Difficulty'),
+                ('chest_pain','Chest_Pain')
+            ] %}
+
+            {% for name,label in fields %}
+            <div class="toggle-row">
+                <label class="toggle-label">{{ label }}:</label>
+                <input type="hidden" name="{{ name }}" value="0">
+                <label class="switch">
+                    <input type="checkbox" name="{{ name }}" value="1">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            {% endfor %}
+
+            <div class="button-row">
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+    </div> -->
+<!-- </body>
+</html> -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lung Cancer Prediction</title>
+
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: url("https://tse2.mm.bing.net/th/id/OIP.J9-V6GoClSgpLFHC6BWSAgHaEK?rs=1&pid=ImgDetMain&o=7&rm=3")
+                  no-repeat center center fixed;
+      background-size: cover;
+      color: #fff;
+    }
+    .overlay {
+      background: rgba(0, 0, 0, 0.6);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .form-box {
+      background: rgba(255, 255, 255, 0.9);
+      color: #000;
+      border-radius: 12px;
+      padding: 30px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    }
+    h1, h2 {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay">
+    <div class="form-box">
+      <h1 class="mb-3">Lung Cancer Prediction</h1>
+      <p class="text-center text-muted">Fill in your details below to check your risk.</p>
+
+      <form method="POST" action="/predict">
+        <div class="row">
+          {% for feature in features %}
+          <div class="col-md-6 mb-3">
+            <label for="{{ feature }}" class="form-label">{{ feature.replace("_", " ").title() }}</label>
+            <input type="number" class="form-control" id="{{ feature }}" name="{{ feature }}" required>
+          </div>
+          {% endfor %}
+        </div>
+
+        <div class="text-center mt-3">
+          <button type="submit" class="btn btn-success btn-lg">Predict</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+
